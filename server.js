@@ -11,15 +11,15 @@ const help = args.help;
 
 if (typeof help !== undefined) {
     console.log(help);
-    exit(0);
+    process.exit(0);
 }
 
 const database = require("better-sqlite3");
 const logdb = new database("logdb");
 
 const debug = args.debug;
-const log = args.log;
-const port = args.port || 5000;
+const log = args.log || true;
+const port = args.port || 5555;
 
 // Require Express.js
 const express = require('express')
@@ -73,10 +73,10 @@ app.use( (req, res, next) => {
         referer: req.headers['referer'],
         useragent: req.headers['user-agent']
     }
-    next();
+    next(logdata);
 })
 
-if (debug === true) {
+if (typeof debug !== undefined && debug === true) {
     // Returns all records in the 'accesslog' table
     app.get('/app/logs/access', (req, res) => {
         try {
@@ -88,10 +88,25 @@ if (debug === true) {
     });
 
     // Returns an error
-    app.get('/app/error', (req, res) => {
-        // code here
+    app.get('/app/error', (err, req, res, next) => {
+      if (res.headersSent) {
+        return next(err)
+      }
+      res.status(500)
+      res.render('Error test successful', { error: err })
     });
 }
+
+
+if (typeof log !== undefined && log === true) {
+  // Use morgan for logging to files
+  // Create a write stream to append (flags: 'a') to a file
+  const WRITESTREAM = fs.createWriteStream('access.log', { flags: 'a' })
+  // Set up the access logging middleware
+  app.use(morgan('combined', { stream: WRITESTREAM }))
+}
+
+
 
 app.get('/app/', (req, res) => {
     // Respond with status 200
