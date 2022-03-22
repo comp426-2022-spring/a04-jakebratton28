@@ -18,6 +18,9 @@
   },
   "homepage": "https://github.com/comp426-2022-spring/a04-jakebratton28#readme",
   "dependencies": {
-    "minimist": "^1.2.5"
+    "better-sqlite3": "^7.5.0",
+    "express": "^4.17.3",
+    "minimist": "^1.2.6",
+    "morgan": "^1.10.0"
   }
 }
