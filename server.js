@@ -14,10 +14,10 @@ if (help !== undefined) {
     process.exit(0);
 }
 
-const database = require("better-sqlite3");
-const logdb = new database("logdb");
+const database = require('better-sqlite3');
+const logdb = new database('log.db');
 
-const debug = args.debug;
+const debug = args.debug || false;
 const log = args.log || true;
 const port = args.port || 5555;
 
@@ -72,11 +72,12 @@ app.use( (req, res, next) => {
         httpversion: req.httpVersion,
         secure: req.secure,
         status: res.statusCode,
+        content_length: req.content_length,
         referer: req.headers['referer'],
         useragent: req.headers['user-agent']
     }
-    const stmt = logdb.prepare(`SELECT name FROM sqlite_master WHERE type='table' and name='accesslog';`);
-    const log = stmt.run(logdata);
+    const stmt = logdb.prepare('INSERT INTO accesslog VALUES (?, ?, ?, ? ,? ,?, ?, ?, ?, ? ,? ,?)');
+    stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.secure + "", logdata.status, logdata.content_length, logdata.referer, logdata.useragent);
     next();
 })
 
@@ -84,7 +85,7 @@ if (debug === 'true') {
     // Returns all records in the 'accesslog' table
     app.get('/app/logs/access', (req, res) => {
         try {
-            const stmt = logdb.prepare('SELECT * FROM accesslog');
+            const stmt = logdb.prepare('SELECT * FROM accesslog').all();
             res.status(200).json(stmt);
         } catch (e) {
             console.error(e)
