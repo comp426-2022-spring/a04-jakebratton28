@@ -4,13 +4,19 @@ const args = minimist(process.argv.slice(2))
 
 args["port"]
 args["help"]
+args["h"]
 args["debug"]
 args["log"]
 
 const help = args.help;
+const h = args.h;
 
 if (help !== undefined) {
     console.log(help);
+    process.exit(0);
+}
+if (h !== undefined) {
+    console.log(h);
     process.exit(0);
 }
 
@@ -87,7 +93,6 @@ if (debug === 'true') {
         try {
             const stmt = logdb.prepare('SELECT * FROM accesslog').all();
             res.status(200).json(stmt);
-            console.log(stmt);
         } catch (e) {
             console.error(e)
         }
