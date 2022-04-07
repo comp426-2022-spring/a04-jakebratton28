@@ -110,8 +110,8 @@ if (debug === 'true') {
         }
     });
     // Returns an error
-    app.get('/app/error', (req, res) => {
-      throw new Error('Error Test Successful')
+    app.get('/app/error', (req, res, next) => {
+      next(new Error('Error Test Successful'))
     });
 }
 
