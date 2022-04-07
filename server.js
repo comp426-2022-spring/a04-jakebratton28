@@ -96,7 +96,7 @@ app.use( (req, res, next) => {
     const stmt = logdb.prepare('INSERT INTO accesslog VALUES (?, ?, ?, ? ,? ,?, ?, ?, ?, ? ,? ,?)');
     const x = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.secure + "", logdata.status, logdata.content_length, logdata.referer, logdata.useragent);
     console.log(x);
-    next(x);
+    next();
 })
 
 if (debug === 'true') {
