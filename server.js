@@ -60,9 +60,7 @@ if (row === undefined) {
             url VARCHAR, 
             protocol VARCHAR,
             httpversion NUMERIC, 
-            secure VARCHAR,
             status INTEGER, 
-            content_length NUMERIC,
             referer VARCHAR,
             useragent VARCHAR
         );
@@ -87,21 +85,19 @@ app.use( (req, res, next) => {
         url: req.url,
         protocol: req.protocol,
         httpversion: req.httpVersion,
-        secure: req.secure,
         status: res.statusCode,
-        content_length: req.content_length,
         referer: req.headers['referer'],
         useragent: req.headers['user-agent']
     }
-    const stmt = logdb.prepare('INSERT INTO accesslog VALUES (?, ?, ?, ? ,? ,?, ?, ?, ?, ? ,? ,?)');
-    const x = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.secure + "", logdata.status, logdata.content_length, logdata.referer, logdata.useragent);
+    const stmt = logdb.prepare('INSERT INTO accesslog VALUES (?, ?, ?, ? ,? ,?, ?, ?, ?, ?)');
+    const x = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.status, logdata.content_length, logdata.referer, logdata.useragent);
     console.log(x);
     next();
 })
 
 if (debug === 'true') {
     // Returns all records in the 'accesslog' table
-    app.get('/app/logs/access', (req, res) => {
+    app.get('/app/log/access', (req, res) => {
         try {
             const stmt = logdb.prepare('SELECT * FROM accesslog').all();
             res.status(200).json(stmt);
@@ -110,8 +106,8 @@ if (debug === 'true') {
         }
     });
     // Returns an error
-    app.get('/app/error', (req, res, next) => {
-      next(new Error('Error Test Successful'))
+    app.get('/app/error', (req, res) => {
+      throw new Error('Error Test Successful');
     });
 }
 
