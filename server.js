@@ -95,7 +95,7 @@ app.use( (req, res, next) => {
     next();
 })
 
-if (debug === 'true') {
+if (debug) {
     // Returns all records in the 'accesslog' table
     app.get('/app/log/access', (req, res) => {
         try {
