@@ -2,10 +2,6 @@ const minimist = require("minimist")
 
 const args = minimist(process.argv.slice(2))
 
-args["port"]
-args["debug"]
-args["log"]
-
 // See what is stored in the object produced by minimist
 console.log(args)
 // Store help text 
@@ -83,10 +79,18 @@ if (debug) {
 }
 
 
-if (log !== 'false') {
+if (log) {
   // Use morgan for logging to files
   // Create a write stream to append (flags: 'a') to a file
   const accesslog = fs.createWriteStream('access.log', { flags: 'a' })
   // Set up the access logging middleware
   app.use(morgan('combined', { stream: accesslog }))
+
+
 }
+
+app.get('/app/',(req,res, next) => {
+   
+    res.json({"message":"your API works! (200)"});
+    res.status(200).end('200 OK')
+})
