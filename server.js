@@ -39,11 +39,13 @@ const port = args.port || 5555;
 
 // Require Express.js
 const express = require('express');
-const { symlinkSync } = require("fs");
-const { exit } = require("process");
 const app = express();
 const fs = require('fs');
 const morgan = require('morgan');
+var md5 = require("md5");
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 // Start an app server
 const server = app.listen(port, () => {
