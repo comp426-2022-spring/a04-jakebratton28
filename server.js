@@ -31,8 +31,7 @@ if (args.help || args.h) {
     process.exit(0)
 }
 
-const database = require('better-sqlite3');
-const logdb = new database('log.db');
+const logdb = require('./database.js');
 
 const debug = args.debug || false;
 const log = args.log || true;
@@ -45,31 +44,6 @@ const { exit } = require("process");
 const app = express();
 const fs = require('fs');
 const morgan = require('morgan');
-
-const stmt = logdb.prepare(`SELECT name FROM sqlite_master WHERE type='table' and name='accesslog';`);
-let row = stmt.get();
-if (row === undefined) {
-    console.log('Log database appears to be empty. Creating log database...')
-
-    const sqlInit = `
-    CREATE TABLE accesslog (  
-        remoteaddr VARCHAR, 
-        remoteuser VARCHAR, 
-        time VARCHAR, 
-        method VARCHAR, 
-        url VARCHAR, 
-        protocol VARCHAR,
-        httpversion NUMERIC, 
-        status INTEGER, 
-        referer VARCHAR,
-        useragent VARCHAR
-    );
-    `
-
-    logdb.exec(sqlInit)
-} else {
-    console.log('Log database exists.')
-}
 
 // Start an app server
 const server = app.listen(port, () => {
@@ -97,12 +71,8 @@ app.use( (req, res, next) => {
 if (debug) {
     // Returns all records in the 'accesslog' table
     app.get('/app/log/access', (req, res) => {
-        try {
-            const stmt = logdb.prepare('SELECT * FROM accesslog').all();
-            res.status(200).json(stmt);
-        } catch (e) {
-            console.error(e)
-        }
+        const stmt = logdb.prepare('SELECT * FROM accesslog').all();
+        res.status(200).json(stmt);
     });
     // Returns an error
     app.get('/app/error', (req, res) => {
