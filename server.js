@@ -72,12 +72,12 @@ app.use( (req, res, next) => {
 
 if (debug) {
     // Returns all records in the 'accesslog' table
-    app.get('/app/log/access', (req, res) => {
+    app.get('/app/log/access', (req, res, next) => {
         const stmt = logdb.prepare('SELECT * FROM accesslog').all();
         res.status(200).json(stmt);
     });
     // Returns an error
-    app.get('/app/error', (req, res) => {
+    app.get('/app/error', (req, res, next) => {
       throw new Error('Error Test Successful');
     });
 }
