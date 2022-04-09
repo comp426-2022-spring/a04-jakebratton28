@@ -42,7 +42,6 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const morgan = require('morgan');
-var md5 = require("md5");
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
