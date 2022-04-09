@@ -1,3 +1,5 @@
+"use stict";
+
 const database = require('better-sqlite3');
 const logdb = new database('log.db');
 
@@ -19,7 +21,7 @@ if (row === undefined) {
         referer VARCHAR,
         useragent VARCHAR
     );
-    `
+    `;
 
     logdb.exec(sqlInit)
 } else {
