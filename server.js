@@ -79,7 +79,7 @@ if (debug) {
 }
 
 
-if (log) {
+if (log !== 'false') {
   // Use morgan for logging to files
   // Create a write stream to append (flags: 'a') to a file
   const accesslog = fs.createWriteStream('access.log', { flags: 'a' })
