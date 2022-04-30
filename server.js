@@ -27,6 +27,7 @@ if (args.help || args.h) {
     process.exit(0)
 }
 // comment
+// more
 const logdb = require('./database.js');
 
 const debug = args.debug || false;
