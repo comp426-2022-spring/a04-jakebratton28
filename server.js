@@ -28,6 +28,7 @@ if (args.help || args.h) {
 }
 // comment?
 // Second comment?
+// third comment?
 const logdb = require('./database.js');
 
 const debug = args.debug || false;
